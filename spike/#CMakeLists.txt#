@@ -1,0 +1,2 @@
+add_library(spike spike.c utils.h)
+
