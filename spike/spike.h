@@ -1,6 +1,7 @@
 #ifndef SPIKE_SPDFT_H
 #define SPIKE_SPDFT_H
 
+#include "utils.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -15,10 +16,18 @@ void neuron_state_update(uint16_t num_exc_inputs, const double *exc_input,
 
 bool neuron_has_spiked(neuron_t *neuron);
 
-typedef struct population_t population_t;
+typedef struct {
+  u32 num_neurons;
+  neuron_t *neurons;
+} population_t;
 
-void population_initialise(population_t *population);
+// typedef struct connection_t connection_t;
 
-typedef struct connection_t connection_t;
+typedef struct {
+  u32 num_pops;
+  population_t **populations;
+} spk_params_t;
+
+void spk_set_sim(spk_params_t *spk_params);
 
 #endif
