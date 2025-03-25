@@ -10,6 +10,14 @@
 #include "spike.h"
 #include "utils.h"
 
+typedef uint8_t *byte_pointer;
+
+void show_bytes(byte_pointer start, size_t len) {
+  for (size_t i = 0; i < len; i++) {
+    printf(" %.2x", start[i]);
+  }
+}
+
 #define BYTES_PER_PIXEL 4
 #define WIDTH 640
 #define HEIGHT 400
@@ -32,7 +40,7 @@ GLOBAL_VAR offscreen_buffer ofs_buff = {0};
 
 static void render_gradient(int xofset, int yofset) {
 
-  // on little endian AARRGGBB
+  // RRGGBBAA
 
   u32 pitch = ofs_buff._width * BYTES_PER_PIXEL;
   u8 *row = (u8 *)ofs_buff.pixels;
@@ -40,10 +48,18 @@ static void render_gradient(int xofset, int yofset) {
   for (int i = 0; i < ofs_buff._height; i++) {
     u32 *pixel = (u32 *)row;
     for (int j = 0; j < ofs_buff._width; j++) {
-      u8 blue = j + xofset;
-      u8 green = i + yofset;
+      u8 blue = j + yofset;
+      u8 green = i + xofset;
 
-      *pixel++ = ((green << 8) | blue);
+      *pixel++ = ((((green << 8) | blue)) << 8) | 0xffu;
+
+      //*pixel++ = 0xFFFF00FFu;
+
+      // Show me the bytes of each pixle
+      // printf("%u ", blue);
+      // show_bytes((byte_pointer)pixel, sizeof(void *));
+
+      // TODO print the hexadecimal
     }
     row += pitch;
   }
